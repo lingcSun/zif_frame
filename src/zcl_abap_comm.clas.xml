@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_ABAP_COMM</CLSNAME>
+    <LANGU>1</LANGU>
+    <DESCRIPT>abap common util</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>CONV_ISO8601_DATETIME</CMPNAME>
+     <LANGU>1</LANGU>
+     <DESCRIPT>转换iso8601日期格式</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>CONV_ISO8601_DATETIME</CMPNAME>
+     <SCONAME>IV_STR</SCONAME>
+     <LANGU>1</LANGU>
+     <DESCRIPT>YYYY-MM-DDThh:mm:ss[.mmm]TZD</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CONV_ISO8601_DATETIME</CMPNAME>
+     <SCONAME>RS_RESULT</SCONAME>
+     <LANGU>1</LANGU>
+     <DESCRIPT>结构体</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>DISPLAY_JSON_MSGTREE_POPUP</CMPNAME>
+     <SCONAME>IV_DDIC_TYPE</SCONAME>
+     <LANGU>1</LANGU>
+     <DESCRIPT>接口入参结构</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

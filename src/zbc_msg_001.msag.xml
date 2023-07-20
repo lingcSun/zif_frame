@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZBC_MSG_001</ARBGB>
+    <MASTERLANG>1</MASTERLANG>
+    <STEXT>基础message</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp;1&amp;2&amp;3&amp;4</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>没有可供展示的消息</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>没有找到SMW0模板对象&amp;1，请检查</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>JSON为空值，无法展示消息</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>数据已被用户&amp;1锁定</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZBC_MSG_001</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>默认数据配置未激活（配置表ZTCONFIG）。</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
