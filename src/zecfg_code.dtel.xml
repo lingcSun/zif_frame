@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD04V>
+    <ROLLNAME>ZECFG_CODE</ROLLNAME>
+    <DDLANGUAGE>1</DDLANGUAGE>
+    <DOMNAME>ZDCFG_CODE</DOMNAME>
+    <HEADLEN>15</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>15</SCRLEN2>
+    <SCRLEN3>20</SCRLEN3>
+    <DDTEXT>配置id</DDTEXT>
+    <REPTEXT>配置id</REPTEXT>
+    <SCRTEXT_S>配置id</SCRTEXT_S>
+    <SCRTEXT_M>配置id</SCRTEXT_M>
+    <SCRTEXT_L>配置id</SCRTEXT_L>
+    <DTELMASTER>1</DTELMASTER>
+    <REFKIND>D</REFKIND>
+   </DD04V>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -1,49 +1,51 @@
-class ZCL_IF_OUTBOUND definition
-  public
-  inheriting from ZCL_IF
-  create public .
+CLASS zcl_if_outbound DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_if
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  class-data GO_INSTANCE type ref to ZCL_IF_OUTBOUND .
+    CLASS-DATA go_instance TYPE REF TO zcl_if_outbound .
 
-  methods EXECUTE
-    importing
-      !IS_INPUT type DATA
-    changing
-      !CS_OUTPUT type DATA optional
-    returning
-      value(RS_IF_DATA) type ZIFT_DATA .
-  methods EXECUTE_JSON
-    changing
-      !CS_IF_DATA type ZIFT_DATA .
-  class-methods GET_INSTANCE
-    importing
-      !IV_IFNUM type ZIFNUM
-    returning
-      value(RO_INSTANCE) type ref to ZCL_IF_OUTBOUND .
-protected section.
+    METHODS execute
+      IMPORTING
+        !is_input         TYPE data
+      CHANGING
+        !cs_output        TYPE data OPTIONAL
+      RETURNING
+        VALUE(rs_if_data) TYPE zift_data .
+    METHODS execute_json
+      CHANGING
+        !cs_if_data TYPE zift_data .
+    CLASS-METHODS get_instance
+      IMPORTING
+        !iv_ifnum          TYPE zifnum
+      RETURNING
+        VALUE(ro_instance) TYPE REF TO zcl_if_outbound .
+    CLASS-METHODS get_access_token IMPORTING !iv_cfg_code type ZECFG_CODE
+                                   RETURNING VALUE(rv_token) TYPE string .
+  PROTECTED SECTION.
 
-  methods PROCESS_DATA
-    importing
-      !IS_INPUT type DATA
-    exporting
-      !ES_OUTPUT type DATA
-    raising
-      CX_AI_SYSTEM_FAULT
-      CX_AI_APPLICATION_FAULT .
+    METHODS process_data
+      IMPORTING
+        !is_input  TYPE data
+      EXPORTING
+        !es_output TYPE data
+      RAISING
+        cx_ai_system_fault
+        cx_ai_application_fault .
 
-  methods SET_GUID
-    redefinition .
-private section.
+    METHODS set_guid
+        REDEFINITION .
+  PRIVATE SECTION.
 
-  methods CALL_WEBSERVICES_IF_DEMO .
-  methods CALL_RESTFUL_OR_ODATA_IF_DEMO .
+    METHODS call_webservices_if_demo .
+    METHODS call_restful_or_odata_if_demo .
 ENDCLASS.
 
 
 
-CLASS ZCL_IF_OUTBOUND IMPLEMENTATION.
+CLASS zcl_if_outbound IMPLEMENTATION.
 
 
   METHOD call_restful_or_odata_if_demo.
@@ -209,137 +211,137 @@ CLASS ZCL_IF_OUTBOUND IMPLEMENTATION.
   ENDMETHOD.
 
 
-METHOD execute.
+  METHOD execute.
 
-  DATA lo_ref_output TYPE REF TO data.
+    DATA lo_ref_output TYPE REF TO data.
 
-  TRY .
+    TRY .
 
 *----- 初始化数据
-      init_data( ).
+        init_data( ).
 
 *----- 生成系统唯一消息标识号GUID
-      set_guid( ).
+        set_guid( ).
 
 *----- 接口配置数据校验
-      CHECK data_check( is_input ) IS INITIAL.
+        CHECK data_check( is_input ) IS INITIAL.
 
 *----- 根据调用者是否传入出参，构造数据引用变量
-      IF cs_output IS SUPPLIED.
-        lo_ref_output = REF #( cs_output ).
-      ELSE.
-        CREATE DATA lo_ref_output TYPE (gs_if_config-zifoutput_struc).
-      ENDIF.
-      ASSIGN lo_ref_output->* TO FIELD-SYMBOL(<ls_output>).
+        IF cs_output IS SUPPLIED.
+          lo_ref_output = REF #( cs_output ).
+        ELSE.
+          CREATE DATA lo_ref_output TYPE (gs_if_config-zifoutput_struc).
+        ENDIF.
+        ASSIGN lo_ref_output->* TO FIELD-SYMBOL(<ls_output>).
 
 *----业务处理
-      IF gv_flag_is_retry EQ 'X' OR gs_if_config-zifpmode NE 'A'.
-        "重处理或非异步处理时执行process_data
-        process_data( EXPORTING is_input  = is_input
-                      IMPORTING es_output = <ls_output> ).
-      ENDIF.
+        IF gv_flag_is_retry EQ 'X' OR gs_if_config-zifpmode NE 'A'.
+          "重处理或非异步处理时执行process_data
+          process_data( EXPORTING is_input  = is_input
+                        IMPORTING es_output = <ls_output> ).
+        ENDIF.
 
 *----- 保存接口数据及日志
-      save_log( EXPORTING is_input  = is_input
-                          is_output = <ls_output> ).
+        save_log( EXPORTING is_input  = is_input
+                            is_output = <ls_output> ).
 
-    CATCH zcx_if_exception INTO DATA(lo_if_cx).
+      CATCH zcx_if_exception INTO DATA(lo_if_cx).
 
 *----- 填充系统变量
-      fill_system_msg( lo_if_cx ).
+        fill_system_msg( lo_if_cx ).
 
 *----- 出错处理
-      handle_exception_log( EXPORTING io_if_cx  = lo_if_cx
-                            CHANGING  cs_output = <ls_output> ).
+        handle_exception_log( EXPORTING io_if_cx  = lo_if_cx
+                              CHANGING  cs_output = <ls_output> ).
 
 *----- 保存接口数据及日志
-      save_log( EXPORTING is_input  = is_input
-                          is_output = <ls_output> ).
+        save_log( EXPORTING is_input  = is_input
+                            is_output = <ls_output> ).
 
-    CATCH cx_ai_system_fault
-          cx_ai_application_fault INTO DATA(lo_ai_fault).
+      CATCH cx_ai_system_fault
+            cx_ai_application_fault INTO DATA(lo_ai_fault).
 
 *----- 异常消息处理
-      handle_cx_root_exception( lo_ai_fault ).
+        handle_cx_root_exception( lo_ai_fault ).
 
 *----- 保存接口数据及日志
-      save_log( EXPORTING is_input  = is_input
-                          is_output = <ls_output> ).
+        save_log( EXPORTING is_input  = is_input
+                            is_output = <ls_output> ).
 
-    CATCH cx_root INTO DATA(lo_cx_root).
+      CATCH cx_root INTO DATA(lo_cx_root).
 
 *----- 异常消息处理
-      handle_cx_root_exception( lo_cx_root ).
+        handle_cx_root_exception( lo_cx_root ).
 
 *----- 保存接口数据及日志
-      save_log( EXPORTING is_input  = is_input
-                          is_output = <ls_output> ).
+        save_log( EXPORTING is_input  = is_input
+                            is_output = <ls_output> ).
 
-    CLEANUP.
+      CLEANUP.
 
-  ENDTRY.
+    ENDTRY.
 
-  rs_if_data = gs_if_data.
+    rs_if_data = gs_if_data.
 
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD execute_json.
+  METHOD execute_json.
 *&--------------------------------------------------------------------&
 * EXECUTE_JSON与接口重处理程序ZIFR_DASHBOARD对接
 * 所有子类可继承直接使用此Method，从而使用共通的处理逻辑流
 * 通常情况下不需要在子类中重写此方法，如有特殊情况可重写
 *&--------------------------------------------------------------------&
-  DATA: lo_input  TYPE REF TO data,
-        lo_output TYPE REF TO data.
+    DATA: lo_input  TYPE REF TO data,
+          lo_output TYPE REF TO data.
 
-  gs_if_data = cs_if_data.
+    gs_if_data = cs_if_data.
 
-  REFRESH gt_if_logs.
+    REFRESH gt_if_logs.
 
 *----- 为当前处理的接口数据加锁,避免多进程处理时,被重复执行.
-  CHECK lock_if_data( ) = abap_true.        "如果锁失败,直接退出本执行.
+    CHECK lock_if_data( ) = abap_true.        "如果锁失败,直接退出本执行.
 
 *----- 保存传入的接口数据，加锁成功后 重新检查接口数据的状态，防止重复处理
-  CHECK set_if_data( cs_if_data ) = 'X'.   "只有尚未成功的数据才继续往下处理
+    CHECK set_if_data( cs_if_data ) = 'X'.   "只有尚未成功的数据才继续往下处理
 
 *----- 设置当前处理的序列号
-  set_process_counter( ).
+    set_process_counter( ).
 
 *----- 将入参从JSON转换为ABAP结构化数据
-  TRY .
-      CREATE DATA lo_input TYPE (gs_if_config-zifinput_struc).
-      ASSIGN lo_input->* TO FIELD-SYMBOL(<ls_input>).
-      IF sy-subrc = 0.
-        /ui2/cl_json=>deserialize( EXPORTING json = gs_if_data-zif_input
-                                             pretty_name = gs_if_config-zifpretty_mode
-                                   CHANGING  data = <ls_input> ).
-      ENDIF.
-    CATCH cx_sy_create_data_error.                      "#EC NO_HANDLER
-  ENDTRY.
+    TRY .
+        CREATE DATA lo_input TYPE (gs_if_config-zifinput_struc).
+        ASSIGN lo_input->* TO FIELD-SYMBOL(<ls_input>).
+        IF sy-subrc = 0.
+          /ui2/cl_json=>deserialize( EXPORTING json = gs_if_data-zif_input
+                                               pretty_name = gs_if_config-zifpretty_mode
+                                     CHANGING  data = <ls_input> ).
+        ENDIF.
+      CATCH cx_sy_create_data_error.                    "#EC NO_HANDLER
+    ENDTRY.
 
 *----- 将出参从JSON转换为ABAP结构化数据
-  TRY .
-      CREATE DATA lo_output TYPE (gs_if_config-zifoutput_struc).
-      ASSIGN lo_output->* TO FIELD-SYMBOL(<ls_output>).
-      IF sy-subrc = 0.
-        /ui2/cl_json=>deserialize( EXPORTING json = gs_if_data-zif_output
-                                             pretty_name = gs_if_config-zifpretty_mode
-                                   CHANGING  data = <ls_output> ).
-      ENDIF.
-    CATCH cx_sy_create_data_error.                      "#EC NO_HANDLER
-  ENDTRY.
+    TRY .
+        CREATE DATA lo_output TYPE (gs_if_config-zifoutput_struc).
+        ASSIGN lo_output->* TO FIELD-SYMBOL(<ls_output>).
+        IF sy-subrc = 0.
+          /ui2/cl_json=>deserialize( EXPORTING json = gs_if_data-zif_output
+                                               pretty_name = gs_if_config-zifpretty_mode
+                                     CHANGING  data = <ls_output> ).
+        ENDIF.
+      CATCH cx_sy_create_data_error.                    "#EC NO_HANDLER
+    ENDTRY.
 
 *----- 调用EXECUTE处理数据
-  execute( EXPORTING is_input  = <ls_input>
-           CHANGING cs_output = <ls_output> ).
+    execute( EXPORTING is_input  = <ls_input>
+             CHANGING cs_output = <ls_output> ).
 
-  cs_if_data = gs_if_data.
+    cs_if_data = gs_if_data.
 
 *----- 解锁接口数据
-  unlock_if_data( ).
+    unlock_if_data( ).
 
-ENDMETHOD.
+  ENDMETHOD.
 
 
   METHOD get_instance.
@@ -397,4 +399,118 @@ ENDMETHOD.
     ENDIF.
 
   ENDMETHOD.
+  METHOD get_access_token.
+    TYPES:BEGIN OF typ_auth,
+            access_token TYPE string,
+            token_type   TYPE string,
+            expires_in   TYPE i,
+            scope        TYPE string,
+          END OF typ_auth.
+    DATA ls_auth TYPE typ_auth. "返回TOKEN报文结构
+
+    DATA:lv_response    TYPE string, "http请求Response返回内容
+         lo_http_client TYPE REF TO if_http_client. "http客户端
+
+    "http调用响应状态
+    DATA:BEGIN OF ls_message,
+           code           TYPE sysubrc,
+           message        TYPE string,
+           message_class  TYPE arbgb,
+           message_number TYPE msgnr,
+         END OF ls_message.
+
+    DATA:lv_access_token TYPE string, "Bearer token
+         lv_expires_in   TYPE timestamp. "过期时间
+
+* 访问系统中的access_token
+    IMPORT p1 TO lv_access_token p2 TO lv_expires_in FROM SHARED MEMORY demo_indx_blob(ar) CLIENT sy-mandt ID 'ACCESS_TOKEN'.
+
+    IF sy-subrc = 0.
+
+      GET TIME STAMP FIELD DATA(lv_stamp).
+      IF lv_stamp < lv_expires_in.
+        rv_token = lv_access_token.
+        RETURN.
+      ENDIF.
+
+    ENDIF.
+
+    SELECT SINGLE *
+    FROM zauth2_cfg
+    INTO @DATA(ls_auth_cfg)
+    WHERE cfg_code = @iv_cfg_code.
+
+    cl_http_client=>create_by_url(
+      EXPORTING
+        url                = conv #( ls_auth_cfg-auth_server_url )
+      IMPORTING
+        client             = lo_http_client
+      EXCEPTIONS
+        argument_not_found = 1
+        plugin_not_active  = 2
+        internal_error     = 3
+        OTHERS             = 4 ).
+    IF sy-subrc <> 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH
+                 sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      RAISE EXCEPTION TYPE zcx_if_exception.
+    ENDIF.
+
+    lo_http_client->request->set_content_type( content_type = 'application/json; charset=utf-8' ).
+
+    lo_http_client->authenticate( username = CONV string( ls_auth_cfg-app_id ) password = CONV string( ls_auth_cfg-app_secret ) ).
+
+    lo_http_client->request->set_method( if_http_request=>co_request_method_post ). "CO_REQUEST_METHOD_GET
+
+    "发送HTTP服务请求
+    lo_http_client->send( EXCEPTIONS http_communication_failure = 1
+                                     http_invalid_state         = 2
+                                     http_processing_failed     = 3
+                                     http_invalid_timeout       = 4
+                                     OTHERS                     = 5 ).
+    IF sy-subrc <> 0.
+      "操作失败，获取失败原因
+      lo_http_client->get_last_error( IMPORTING code = ls_message-code message = ls_message-message
+                                                message_class = ls_message-message_class message_number = ls_message-message_number ).
+      MESSAGE ID ls_message-message_class TYPE 'E' NUMBER ls_message-message_number INTO DATA(lv_dummy)
+              WITH ls_message-code ls_message-message.
+      RAISE EXCEPTION TYPE zcx_if_exception.
+    ENDIF.
+
+    "接收HTTP服务请求处理结果
+    lo_http_client->receive( EXCEPTIONS http_communication_failure = 1
+                                        http_invalid_state         = 2
+                                        http_processing_failed     = 3
+                                        OTHERS                     = 5 ).
+    IF sy-subrc <> 0 .
+      "操作失败，获取失败原因
+      lo_http_client->get_last_error( IMPORTING code = ls_message-code message = ls_message-message
+                                                message_class = ls_message-message_class message_number = ls_message-message_number ).
+      MESSAGE ID ls_message-message_class TYPE 'E' NUMBER ls_message-message_number INTO lv_dummy
+              WITH ls_message-code ls_message-message.
+      RAISE EXCEPTION TYPE zcx_if_exception.
+    ELSE.
+      "获取HTTP请求返回结果Response
+      lv_response = lo_http_client->response->get_cdata( ).
+
+      "返回结果内容格式转换 (json string->指定结构）
+      /ui2/cl_json=>deserialize( EXPORTING json = lv_response
+                                           assoc_arrays = abap_true
+                                 CHANGING data = ls_auth ).
+    ENDIF.
+
+    "关闭http连接，释放连接资源
+    CALL METHOD lo_http_client->close.
+
+* 缓冲ACCESS_TOKEN
+    GET TIME STAMP FIELD lv_stamp.
+
+    DATA(rv_stamp) = cl_abap_tstmp=>add_to_short( tstmp = lv_stamp secs = ls_auth-expires_in ).
+
+    EXPORT p1 = ls_auth-access_token p2 = rv_stamp TO SHARED MEMORY demo_indx_blob(ar) CLIENT sy-mandt ID 'ACCESS_TOKEN'.
+
+    rv_token = ls_auth-access_token.
+
+  ENDMETHOD.
+
 ENDCLASS.

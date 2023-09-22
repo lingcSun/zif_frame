@@ -44,6 +44,72 @@
      <MSGNR>005</MSGNR>
      <TEXT>请选择至少一行记录</TEXT>
     </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>设置删除标记</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>报文为空</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>接口查询并返回&amp;1条记录</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>OUTBOUND接口中,配置表处理类不允许为空</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>OUTBOUND接口中,配置表方法名称不允许为空</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>OUTBOUND接口中,配置表维护处理类和方法不存在</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>027</MSGNR>
+     <TEXT>接口地址不允许为空</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>028</MSGNR>
+     <TEXT>创建Http Client失败</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>029</MSGNR>
+     <TEXT>Http调用通讯异常</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>030</MSGNR>
+     <TEXT>Http状态Code异常：&amp;1，消息：&amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>1</SPRSL>
+     <ARBGB>ZIF_MSG_001</ARBGB>
+     <MSGNR>031</MSGNR>
+     <TEXT>接口出入参数据未维护（配置表ZTBS0002）。</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
